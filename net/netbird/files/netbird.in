@@ -1,0 +1,20 @@
+#!/bin/sh
+
+# PROVIDE: netbird
+# REQUIRE: FILESYSTEMS devfs
+# BEFORE:  pf ipfw
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+
+name="netbird"
+rcvar=netbird_enable
+desc="netbird mesh vpn"
+netbird_env="IS_DAEMON=1"
+pidfile="/var/run/${name}.pid"
+command="/usr/sbin/daemon"
+daemon_args="-P ${pidfile} -r -t ${name}"
+command_args="${daemon_args} /usr/local/bin/netbird service run --config /usr/local/etc/netbird/config.json --log-level info --log-file /var/log/netbird/client.log"
+
+load_rc_config $name
+run_rc_command "$1"
